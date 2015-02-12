@@ -13,11 +13,6 @@ import Control.Applicative
 import Network.CGI hiding (setHeader)
 import Data.Text.Lazy
 
-runCode :: String -> IO (ExitCode, String, String)
-runCode c = readProcessWithExitCode "docker"
-            ["run", "-i", "haskell", "/bin/bash"]
-            ("echo '" ++ c ++ "' | runhaskell")
-
 reqs :: ScottyM ()
 reqs = do
     get "/" $ Views.root (problems !! 0) 1
