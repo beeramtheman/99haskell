@@ -37,3 +37,7 @@ cabal.config
 *.prof
 *.aux
 *.hp
+
+
+### Manually added ###
+Script.js
