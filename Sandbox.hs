@@ -8,9 +8,11 @@ import Data.Unique
 import System.Directory
 import Data.List
 import Data.Aeson hiding (json)
-import Data.Text hiding (length)
+import Data.Text hiding (length, intercalate, drop)
 
-data TestRes = TestRes { testSucc   :: Bool
+data TestRes = TestRes { test       :: Test
+                       , testSucc   :: Bool
+                       , testRet    :: String
                        , testErr    :: String
                        } deriving (Show)
 
@@ -19,7 +21,10 @@ data Mark = Mark { markSucc  :: Bool
                  } deriving (Show)
 
 instance ToJSON TestRes where
-    toJSON (TestRes s e) = object [pack "success" .= s, pack "error" .= e]
+    toJSON (TestRes t s r e) = object [ pack "test" .= t
+                                      , pack "success" .= s
+                                      , pack "returned" .= r
+                                      , pack "error" .= e ]
 
 instance ToJSON Mark where
     toJSON (Mark s t) = object [pack "success" .= s, pack "tests" .= t]
@@ -38,6 +43,9 @@ hGetAllLines h = do
 
 success :: Test -> [String] -> Bool
 success t o = (o !! (length o - 2) == "*Main> " ++ (snd t))
+
+returned :: [String] -> String
+returned o = drop 7 $ o !! (length o - 2)
 
 runTest :: Test -> String -> IO TestRes
 runTest t c = do
@@ -61,7 +69,7 @@ runTest t c = do
     error <- hGetContents herr
 
     removeDirectoryRecursive dir
-    return $ TestRes (success t output) (error)
+    return $ TestRes t (success t output) (returned output) error
 
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do

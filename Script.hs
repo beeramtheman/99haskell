@@ -111,7 +111,10 @@ runCode e = do
     term <- ace "terminal"
     datax <- query ".datax"
     num <- getData "num" datax
-    ajax "post" ("http://localhost:3000/sandbox/" ++ num) [("code", (aceValue term))] testCallback
+    ajax "post"
+         ("http://localhost:3000/sandbox/" ++ num)
+         [("code", (aceValue term))]
+         testCallback
 
 fullscreenEditor :: Event -> Fay ()
 fullscreenEditor e = fullscreen =<< query "#terminal"
