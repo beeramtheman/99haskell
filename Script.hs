@@ -20,6 +20,9 @@ addEvent = ffi "%3.addEventListener(%1, %2)"
 fullscreen :: Element -> Fay ()
 fullscreen = ffi "%1.mozRequestFullScreen()"
 
+getData :: String -> Element -> Fay String
+getData = ffi "%2['dataset'][%1]"
+
 -- AJAX
 
 makeParam :: [(String, String)] -> Fay Param
@@ -106,7 +109,9 @@ setupEvents = do
 runCode :: Event -> Fay ()
 runCode e = do
     term <- ace "terminal"
-    ajax "post" "http://localhost:3000/sandbox" [("code", (aceValue term))] testCallback
+    datax <- query ".datax"
+    num <- getData "num" datax
+    ajax "post" ("http://localhost:3000/sandbox/" ++ num) [("code", (aceValue term))] testCallback
 
 fullscreenEditor :: Event -> Fay ()
 fullscreenEditor e = fullscreen =<< query "#terminal"

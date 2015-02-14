@@ -5,9 +5,13 @@ import Data.Map
 type Test = (String, String)
 
 data Problem = Problem { description :: String
-                       , examples    :: String
                        , tests       :: [Test]
                        } deriving Show
 
 problems :: [Problem]
-problems = [ Problem "Create a function named 'myLast' that finds the last element of a list." "Prelude> myLast [1,2,3,4]\n4\nPrelude> myLast ['x','y','z']\n'z'" [("myLast [1,2,3]", "3")] ]
+problems = [ Problem
+                 "Create a function named 'myLast' that finds the last element of a list."
+                 [("myLast [1,2,3]", "3")]
+           , Problem
+                 "Create a function named 'myButLast' that finds the second last element of a list."
+                 [("myButLast [1,2,3,4]", "3")] ]

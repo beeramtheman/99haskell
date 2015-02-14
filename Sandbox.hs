@@ -65,5 +65,5 @@ runTest t c = do
 
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do
-    allTests <- sequence [runTest t c | t <- tests (problems !! i)]
+    allTests <- sequence [runTest t c | t <- tests (problems !! (i - 1))]
     return . toJSON $ Mark (elem True [testSucc x | x <- allTests]) allTests

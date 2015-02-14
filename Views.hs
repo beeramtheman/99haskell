@@ -2,7 +2,7 @@
 
 module Views (root) where
 
-import Problems (Problem(..))
+import Problems (Problem(..), problems)
 import Data.Monoid (mempty)
 import qualified Web.Scotty as S
 import Text.Blaze.Html5
@@ -12,19 +12,20 @@ import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Text
 import Prelude hiding (head, div, id)
 
-root :: Problem -> Int -> S.ActionM ()
-root p i = S.html . renderHtml $ do
+root :: Int -> S.ActionM ()
+root i = S.html . renderHtml $ do
     head $ do
         H.title "99 Haskell"
         link ! rel "stylesheet" ! href "https://maxcdn.bootstrapcdn.com\
             \/font-awesome/4.3.0/css/font-awesome.min.css"
         link ! rel "stylesheet" ! href
             "https://fonts.googleapis.com/css?family=Open+Sans:400,400italic"
-        --link ! rel "stylesheet" ! href
-         --   "https://fonts.googleapis.com/css?family=Source+Code+Pro"
+        link ! rel "stylesheet" ! href
+            "https://fonts.googleapis.com/css?family=Source+Code+Pro"
         link ! rel "stylesheet" ! href "/css/root.css"
 
     body $ do
+        div ! class_ "datax" ! dataAttribute "num" (toValue i) $ mempty
         div ! class_ "topbar" $ mempty
         div ! class_ "wrap" $ do
             header "99 Haskell"
@@ -34,7 +35,7 @@ root p i = S.html . renderHtml $ do
                     b $ do
                         toHtml i
                         ". "
-                    toHtml $ description p
+                    toHtml . description $ problems !! (i - 1)
 
                 div ! class_ "control" $ do
                     a ! href "http://example.com" ! target "_blank" $ "Examples"
