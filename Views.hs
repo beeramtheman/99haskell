@@ -53,9 +53,7 @@ root i = S.html . renderHtml $ do
                     H.span ! class_ "stop fa fa-stop"
                            ! A.title "Stop running" $ mempty
 
-            div ! id "terminal" $ do
-                "myLast :: [a] -> a\n\
-                \myLast x = x !! (length x - 1)"
+            div ! id "terminal" $ toHtml . hint $ problems !! (i - 1)
 
             footer $ do
                 div ! class_ "quote" $
