@@ -27,42 +27,46 @@ root i = S.html . renderHtml $ do
     body $ do
         div ! class_ "datax" ! dataAttribute "num" (toValue i) $ mempty
         div ! class_ "topbar" $ mempty
-        div ! class_ "wrap" $ do
-            header "99 Haskell"
+        header "99 Haskell"
 
-            div ! class_ "dashboard" $ do
-                div ! class_ "problem" $ do
-                    b $ do
-                        toHtml i
-                        ". "
-                    toHtml . description $ problems !! (i - 1)
+        div ! class_ "io-wrap" $ do
+            section ! class_ "in" $ do
+                div ! class_ "dashboard" $ do
+                    div ! class_ "problem" $ do
+                        b $ do
+                            toHtml i
+                            ". "
+                        toHtml . description $ problems !! (i - 1)
 
-                div ! class_ "control" $ do
-                    a ! href "http://example.com" ! target "_blank" $ "Examples"
-                    br
-                    a ! href "http://example.com" ! target "_blank" $ "Solutions"
+                    div ! class_ "control" $ do
+                        a ! href "http://example.com" ! target "_blank" $ "Examples"
+                        br
+                        a ! href "http://example.com" ! target "_blank" $ "Solutions"
 
-            div ! class_ "termbar" $ do
-                div ! class_ "left" $
-                    H.span ! class_ "fullscreen fa fa-arrows-alt"
-                           ! A.title "Fullscreen" $ mempty
+                div ! class_ "termbar" $ do
+                    div ! class_ "left" $ do
+                        H.span ! class_ "fullscreen fa fa-arrows-alt"
+                               ! A.title "Fullscreen" $ mempty
+                        H.span ! class_ "filename" $ "Awesome.hs"
 
-                div ! class_ "right" $ do
-                    H.span ! class_ "run fa fa-play"
-                           ! A.title "Run code" $ mempty
-                    H.span ! class_ "stop fa fa-stop"
-                           ! A.title "Stop running" $ mempty
+                    div ! class_ "right" $ do
+                        H.span ! class_ "run fa fa-play"
+                               ! A.title "Run code" $ mempty
+                        H.span ! class_ "stop fa fa-stop"
+                               ! A.title "Stop running" $ mempty
 
-            div ! id "terminal" $ toHtml . hint $ problems !! (i - 1)
+                div ! id "terminal" $ toHtml . hint $ problems !! (i - 1)
 
-            footer $ do
-                div ! class_ "quote" $
-                    "\"I've got 99 problems but a side effect ain't one\""
+            section ! class_ "out" $ mempty
 
-                "A service made by "
-                a ! href "http://bram.gg" $ "Bram Hoskin"
-                " - "
-                a ! href "/about" $ "About"
+        footer $ do
+            div ! class_ "quote" $
+                "\"I've got 99 problems but a side effect ain't one\""
 
-            script ! src "https://cdn.jsdelivr.net/ace/1.1.8/min/ace.js" $ mempty
-            script ! src "/js/root.js" $ mempty
+            "A service made by "
+            a ! href "http://bram.gg" $ "Bram Hoskin"
+            " - "
+            a ! href "/about" $ "About"
+
+        script ! src "https://cdn.jsdelivr.net/ace/1.1.8/min/ace.js" $ mempty
+        script ! src "/js/root.js" $ mempty

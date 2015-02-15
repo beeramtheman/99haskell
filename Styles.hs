@@ -3,6 +3,7 @@
 module Styles (Styles.root) where
 
 import Clay
+import qualified Clay.Media as M
 import Data.Text.Lazy
 import qualified Data.Map as Map
 
@@ -19,6 +20,8 @@ palette c = case Map.lookup c colors of
                                 , ("boldest bg", "#FCF6EF")
                                 , ("bold walls", "#F1D4AF")
                                 , ("darkest bg", "#575757")
+                                , ("dull walls", "#dbdbdb")
+                                , ("dullest bg", "#F5F5F5")
                                 , ("big action", "#E08E79")]
 
 root :: Text
@@ -33,18 +36,55 @@ root = render $ do
         height (px 6)
         backgroundColor $ palette "decorative"
 
-    ".wrap" ? do
-        position relative
-        width (px 648)
-        maxWidth (pct 100)
-        minWidth (px 320)
-        margin (px 0) auto (px 0) auto
-
     header ? do
         height (px 100)
         lineHeight (px 100)
         fontSize (px 20)
         textAlign (alignSide sideCenter)
+
+    ".io-wrap" ? do
+        position relative
+        margin (px 0) auto (px 0) auto
+
+        query Clay.all [M.minWidth (px 900)] $ do
+            width (px 900)
+            section # ".in" ? width (px 648)
+
+            section # ".out" ? do
+                position absolute
+                top (px 0)
+                right (px 0)
+                width (px 232)
+                height (pct 100)
+
+        query Clay.all [M.maxWidth (px 899)] $ do
+            width (px 648)
+            section # ".out" ? margin (px 20) (px 0) (px 0) (px 0)
+
+    section # ".out" ? do
+        boxSizing borderBox
+        fontSize (px 14)
+        border solid (px 1) $ palette "dull walls"
+        backgroundColor $ palette "dullest bg"
+
+        ".test" ? do
+            position relative
+
+            ".success" ? do
+                position absolute
+                top (px 0)
+                left (px 0)
+                width (px 10)
+                height (pct 100)
+                ".true" & backgroundColor green
+                ".false" & backgroundColor red
+
+            ".overview" ? do
+                padding (px 10) (px 10) (px 10) (px 20)
+
+                ".sep" ? do
+                    color blue
+                    fontWeight bold
 
     ".dashboard" ? do
         position relative
@@ -77,7 +117,13 @@ root = render $ do
         color $ palette "near white"
         backgroundColor $ palette "darkest bg"
 
-        ".left" ? float floatLeft
+        ".left" ? do
+            float floatLeft
+
+            ".filename" ? do
+                position absolute
+                margin (px 0) (px 0) (px 0) (px 10)
+                fontSize (px 14)
 
         ".right" ? float floatRight
 

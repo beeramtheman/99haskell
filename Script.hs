@@ -1,4 +1,4 @@
-import Prelude
+import Prelude hiding (lookup)
 import FFI
 
 data Ace
@@ -8,13 +8,14 @@ data Ajax
 data Param
 data Url
 data AjaxRes
+data Html
 
 -- General
 
 query :: String -> Fay Element
 query = ffi "document.querySelector(%1)"
 
-addEvent :: String -> (Event -> Fay()) -> Element -> Fay ()
+addEvent :: String -> (Event -> Fay ()) -> Element -> Fay ()
 addEvent = ffi "%3.addEventListener(%1, %2)"
 
 fullscreen :: Element -> Fay ()
@@ -22,6 +23,18 @@ fullscreen = ffi "%1.mozRequestFullScreen()"
 
 getData :: String -> Element -> Fay String
 getData = ffi "%2['dataset'][%1]"
+
+fromJson :: a -> Fay a
+fromJson = ffi "JSON.parse(%1)"
+
+setHtml :: Html -> Element -> Fay ()
+setHtml = ffi "%2['innerHTML'] = %1"
+
+lookup :: String -> a -> Fay b
+lookup = ffi "%2[%1]"
+
+forEach :: (a -> Fay ()) -> a -> Fay ()
+forEach = ffi "%2.forEach(%1)"
 
 -- AJAX
 
@@ -86,7 +99,7 @@ aceSet = ffi "%1.setOption(%2, %3)"
 aceSetBool :: Ace -> String -> Bool -> Fay ()
 aceSetBool = ffi "%1.setOption(%2, %3)"
 
-aceValue :: Ace -> String
+aceValue :: Ace -> Fay String
 aceValue = ffi "%1.getSession().getValue()"
 
 -- Config
@@ -104,6 +117,11 @@ setupEvents = do
     query ".termbar .run" >>= addEvent "click" runCode
     query ".termbar .fullscreen" >>= addEvent "click" fullscreenEditor
 
+setupFunctions :: Fay ()
+setupFunctions = do
+    ffi "window.escape = function(h) { \
+        \ return h.replace(/&/g, '&amp;').replace(/</g, '&lt;') }"
+
 -- Events
 
 runCode :: Event -> Fay ()
@@ -111,18 +129,41 @@ runCode e = do
     term <- ace "terminal"
     datax <- query ".datax"
     num <- getData "num" datax
+    aceVal <- aceValue term
     ajax "post"
          ("http://localhost:3000/sandbox/" ++ num)
-         [("code", (aceValue term))]
-         testCallback
+         [("code", aceVal)]
+         showMark
 
 fullscreenEditor :: Event -> Fay ()
 fullscreenEditor e = fullscreen =<< query "#terminal"
 
 -- Ajax Callbacks
 
-testCallback :: AjaxRes -> Fay ()
-testCallback s = print s
+showMark :: AjaxRes -> Fay ()
+showMark m = do
+    out <- query "section.out"
+    tests <- lookup "tests" =<< (fromJson m)
+    markHtml <- makeMarkHtml tests
+    setHtml markHtml out
+    print tests
+
+-- HTML
+
+makeMarkHtml :: a -> Fay Html
+makeMarkHtml = ffi "(function() { \
+    \ var html = ''; \
+    \ %1.forEach(function(t) { \
+    \     html += '<div class=\"test\">\\\
+    \                 <div class=\"success ' + t.success + '\"></div>\\\
+    \                 <div class=\"overview\">' + escape(t.test[0]) + '\\\
+    \                 <span class=\"sep\">|</span> ' + escape(t.test[1]) + '\\\
+    \                 <span class=\"sep\">|</span> ' + escape(t.output) + '\\\
+    \                 </div>\\\
+    \             </div>' \
+    \ }); \
+    \ return html; \
+\ })()"
 
 -- Main
 
@@ -130,3 +171,4 @@ main :: Fay ()
 main = do
     setupTerm
     setupEvents
+    setupFunctions

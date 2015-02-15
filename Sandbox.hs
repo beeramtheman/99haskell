@@ -12,8 +12,7 @@ import Data.Text hiding (length, intercalate, drop)
 
 data TestRes = TestRes { test       :: Test
                        , testSucc   :: Bool
-                       , testRet    :: String
-                       , testErr    :: String
+                       , testOut    :: String
                        } deriving (Show)
 
 data Mark = Mark { markSucc  :: Bool
@@ -21,10 +20,9 @@ data Mark = Mark { markSucc  :: Bool
                  } deriving (Show)
 
 instance ToJSON TestRes where
-    toJSON (TestRes t s r e) = object [ pack "test" .= t
-                                      , pack "success" .= s
-                                      , pack "returned" .= r
-                                      , pack "error" .= e ]
+    toJSON (TestRes t s o) = object [ pack "test" .= t
+                                    , pack "success" .= s
+                                    , pack "output" .= o ]
 
 instance ToJSON Mark where
     toJSON (Mark s t) = object [pack "success" .= s, pack "tests" .= t]
@@ -46,6 +44,10 @@ success t o = (o !! (length o - 2) == "*Main> " ++ (snd t))
 
 returned :: [String] -> String
 returned o = drop 7 $ o !! (length o - 2)
+
+makeTestRes :: Test -> Bool -> String -> String -> TestRes
+makeTestRes t s r e | length e > 0 = TestRes t s e
+                    | otherwise    = TestRes t s r
 
 runTest :: Test -> String -> IO TestRes
 runTest t c = do
@@ -69,7 +71,7 @@ runTest t c = do
     error <- hGetContents herr
 
     removeDirectoryRecursive dir
-    return $ TestRes t (success t output) (returned output) error
+    return $ makeTestRes t (success t output) (returned output) error
 
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do
