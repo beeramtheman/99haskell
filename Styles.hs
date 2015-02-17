@@ -7,22 +7,31 @@ import qualified Clay.Media as M
 import Data.Text.Lazy
 import qualified Data.Map as Map
 
+editWidth = 648
+minOutWidth = 590
+sep = 20
+
+bigScreen = editWidth + sep + minOutWidth
+
 -- http://www.colourlovers.com/palette/49963/let_them_eat_cake
 palette :: String -> Color
 palette c = case Map.lookup c colors of
     Nothing -> transparent
     Just x -> x
     where colors = Map.fromList [ ("near black", "#212121")
-                                , ("near white", "#DEDEDE")
-                                , ("decorative", "#C5E0DC")
-                                , ("background", "#FBF9F5")
-                                , ("bg borders", "#ECE5CE")
-                                , ("boldest bg", "#FCF6EF")
-                                , ("bold walls", "#F1D4AF")
+                                , ("near white", "#dedede")
+                                , ("decorative", "#c5e0dc")
+                                , ("background", "#fbf9f5")
+                                , ("bg borders", "#ece5ce")
+                                , ("boldest bg", "#fcf6ef")
+                                , ("bold walls", "#f1d4af")
                                 , ("darkest bg", "#575757")
                                 , ("dull walls", "#dbdbdb")
-                                , ("dullest bg", "#F5F5F5")
-                                , ("big action", "#E08E79")]
+                                , ("dullest bg", "#f5f5f5")
+                                , ("dull bg #2", "#ededed")
+                                , ("test wrong", "#e86868")
+                                , ("test right", "#6be868")
+                                , ("big action", "#ededed")]
 
 root :: Text
 root = render $ do
@@ -46,29 +55,33 @@ root = render $ do
         position relative
         margin (px 0) auto (px 0) auto
 
-        query Clay.all [M.minWidth (px 900)] $ do
-            width (px 900)
-            section # ".in" ? width (px 648)
+        query Clay.all [M.minWidth (px bigScreen)] $ do
+            width (px bigScreen)
+            section # ".in" ? width (px editWidth)
 
             section # ".out" ? do
                 position absolute
                 top (px 0)
                 right (px 0)
-                width (px 232)
-                height (pct 100)
+                width (px minOutWidth)
+                maxHeight (pct 100)
 
-        query Clay.all [M.maxWidth (px 899)] $ do
-            width (px 648)
-            section # ".out" ? margin (px 20) (px 0) (px 0) (px 0)
+        query Clay.all [M.maxWidth (px $ bigScreen - 1)] $ do
+            width (px editWidth)
+            section # ".out" ? margin (px sep) (px 0) (px 0) (px 0)
 
     section # ".out" ? do
         boxSizing borderBox
-        fontSize (px 14)
+        fontSize (px 13)
         border solid (px 1) $ palette "dull walls"
+        overflow auto
         backgroundColor $ palette "dullest bg"
 
         ".test" ? do
             position relative
+
+            ":nth-child(even)" & do
+                backgroundColor $ palette "dull bg #2"
 
             ".success" ? do
                 position absolute
@@ -76,19 +89,15 @@ root = render $ do
                 left (px 0)
                 width (px 10)
                 height (pct 100)
-                ".true" & backgroundColor green
-                ".false" & backgroundColor red
+                ".true" & backgroundColor (palette "test right")
+                ".false" & backgroundColor (palette "test wrong")
 
             ".overview" ? do
                 padding (px 10) (px 10) (px 10) (px 20)
 
-                ".sep" ? do
-                    color blue
-                    fontWeight bold
-
     ".dashboard" ? do
         position relative
-        marginBottom (px 20)
+        marginBottom (px sep)
 
         ".problem" ? do
             width (other "calc(80% - 10px)")

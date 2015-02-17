@@ -119,8 +119,8 @@ setupEvents = do
 
 setupFunctions :: Fay ()
 setupFunctions = do
-    ffi "window.escape = function(h) { \
-        \ return h.replace(/&/g, '&amp;').replace(/</g, '&lt;') }"
+    ffi "window.escape = function(h) { return h.replace(/&/g, '&amp;').replace \
+        \ (/</g, '&lt;').replace(/\\n/g, '<br>').replace(/ /g, '&nbsp;') }"
 
 -- Events
 
@@ -146,20 +146,22 @@ showMark m = do
     tests <- lookup "tests" =<< (fromJson m)
     markHtml <- makeMarkHtml tests
     setHtml markHtml out
+    print m
 
 -- HTML
 
 makeMarkHtml :: a -> Fay Html
 makeMarkHtml = ffi "(function() { \
     \ var html = ''; \
-    \ %1.forEach(function(t) { \
+    \ %1.forEach(function(t, i) { \
     \     html += '<div class=\"test\">\\\
     \                 <div class=\"success ' + t.success + '\"></div>\\\
     \                 <div class=\"overview\">' + escape(t.test[0]) + '\\\
-    \                 <span class=\"sep\">|</span> ' + escape(t.test[1]) + '\\\
-    \                 <span class=\"sep\">|</span> ' + escape(t.output) + '\\\
-    \                 </div>\\\
-    \             </div>' \
+    \                 -> ' + escape(t.test[1]); \
+    \     if(!t.success) { \
+    \         html += '<br>' + escape(t.output); \
+    \     } \
+    \     html += '</div></div>'; \
     \ }); \
     \ return html; \
 \ })()"

@@ -8,7 +8,7 @@ import Data.Unique
 import System.Directory
 import Data.List
 import Data.Aeson hiding (json)
-import Data.Text hiding (length, drop, take, isPrefixOf)
+import Data.Text (pack)
 
 data TestRes = TestRes { test       :: Test
                        , testSucc   :: Bool
@@ -27,6 +27,9 @@ instance ToJSON TestRes where
 instance ToJSON Mark where
     toJSON (Mark s t) = object [pack "success" .= s, pack "tests" .= t]
 
+trim :: Char -> String -> String
+trim v = x . x where x = reverse . dropWhile (\x -> x == v)
+
 hGetContentsEager :: Handle -> IO String
 hGetContentsEager h = do
     readable <- hIsReadable h
@@ -35,7 +38,7 @@ hGetContentsEager h = do
     if readable && not end then do
         x <- hGetLine h
         y <- hGetContentsEager h
-        return $ x ++ y
+        return . trim '\n' $ x ++ "\n" ++ y
     else
         return ""
 
