@@ -146,7 +146,6 @@ showMark m = do
     tests <- lookup "tests" =<< (fromJson m)
     markHtml <- makeMarkHtml tests
     setHtml markHtml out
-    print tests
 
 -- HTML
 

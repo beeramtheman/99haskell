@@ -47,7 +47,7 @@ root i = S.html . renderHtml $ do
                     div ! class_ "left" $ do
                         H.span ! class_ "fullscreen fa fa-arrows-alt"
                                ! A.title "Fullscreen" $ mempty
-                        H.span ! class_ "filename" $ "Awesome.hs"
+                        H.span ! class_ "filename" $ "Main.hs"
 
                     div ! class_ "right" $ do
                         H.span ! class_ "run fa fa-play"
