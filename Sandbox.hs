@@ -55,8 +55,8 @@ makeTestRes :: Test -> Bool -> String -> String -> TestRes
 makeTestRes t s r e | length e > 0 = TestRes t s $ stripError e
                     | otherwise    = TestRes t s r
 
-runTest :: Test -> String -> IO TestRes
-runTest t c = do
+runTest :: String -> Test -> IO TestRes
+runTest c t = do
     unique <- newUnique
     let dir = "/tmp/99haskell/" ++ (show $ hashUnique unique)
     createDirectoryIfMissing True dir
@@ -82,5 +82,5 @@ runTest t c = do
 
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do
-    allTests <- sequence [runTest t c | t <- tests (problems !! (i - 1))]
+    allTests <- mapConcurrently (runTest c) (tests $ problems !! (i - 1))
     return . toJSON $ Mark (elem True [testSucc x | x <- allTests]) allTests
