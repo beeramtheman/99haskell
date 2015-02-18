@@ -9,6 +9,7 @@ data Param
 data Url
 data AjaxRes
 data Html
+data Object
 
 -- General
 
@@ -35,6 +36,12 @@ lookup = ffi "%2[%1]"
 
 forEach :: (a -> Fay ()) -> a -> Fay ()
 forEach = ffi "%2.forEach(%1)"
+
+makeObject :: Fay Object
+makeObject = ffi "{}"
+
+objAddStr :: String -> String -> Object -> Fay Object
+objAddStr = ffi "(function() { %3[%1] = %2; return %3; })()"
 
 -- AJAX
 
@@ -102,6 +109,14 @@ aceSetBool = ffi "%1.setOption(%2, %3)"
 aceValue :: Ace -> Fay String
 aceValue = ffi "%1.getSession().getValue()"
 
+addCommand :: Ace -> String -> Object -> (Event -> Fay ()) -> Fay ()
+addCommand = ffi "%1.commands.addCommand({ \
+    \ name: %2, \
+    \ bindKey: %3, \
+    \ exec: %4 \
+\ })"
+
+
 -- Config
 
 setupTerm :: Fay ()
@@ -111,6 +126,12 @@ setupTerm = do
     aceSet term "theme" "ace/theme/tomorrow"
     aceSetBool term "wrap" True
     aceSetBool term "showGutter" False
+
+    keys <- objAddStr "win" "Ctrl-Enter"
+            =<< objAddStr "mac" "Command-Enter"
+            =<< makeObject
+
+    addCommand term "test" keys runCode
 
 setupEvents :: Fay ()
 setupEvents = do
@@ -170,6 +191,6 @@ makeMarkHtml = ffi "(function() { \
 
 main :: Fay ()
 main = do
+    setupFunctions
     setupTerm
     setupEvents
-    setupFunctions

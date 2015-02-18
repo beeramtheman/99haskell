@@ -140,8 +140,6 @@ root = render $ do
             lineHeight (px 30)
             cursor pointer
 
-        ".stop" ? display none
-
     "#terminal" ? do
         height (px 300)
         fontFamily ["Source Code Pro"] [monospace]

@@ -51,9 +51,7 @@ root i = S.html . renderHtml $ do
 
                     div ! class_ "right" $ do
                         H.span ! class_ "run fa fa-play"
-                               ! A.title "Run code" $ mempty
-                        H.span ! class_ "stop fa fa-stop"
-                               ! A.title "Stop running" $ mempty
+                               ! A.title "Run code (Ctrl-Enter)" $ mempty
 
                 div ! id "terminal" $ toHtml . hint $ problems !! (i - 1)
 
