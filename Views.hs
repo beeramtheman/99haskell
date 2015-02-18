@@ -12,6 +12,13 @@ import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Text
 import Prelude hiding (head, div, id)
 
+renderTests :: Problem -> Html
+renderTests p = mapM_
+    (\t -> div ! class_ "test" $ do
+        div ! class_ "success neutral" $ mempty
+        div ! class_ "overview" $ toHtml $ (fst t) ++ " -> " ++ (snd t))
+    (tests p)
+
 root :: Int -> S.ActionM ()
 root i = S.html . renderHtml $ do
     head $ do
@@ -36,7 +43,7 @@ root i = S.html . renderHtml $ do
                         b $ do
                             toHtml i
                             ". "
-                        toHtml . description $ problems !! (i - 1)
+                        toHtml . description $ p
 
                     div ! class_ "control" $ do
                         a ! href "http://example.com" ! target "_blank" $ "Examples"
@@ -53,9 +60,9 @@ root i = S.html . renderHtml $ do
                         H.span ! class_ "run fa fa-play"
                                ! A.title "Run code (Ctrl-Enter)" $ mempty
 
-                div ! id "terminal" $ toHtml . hint $ problems !! (i - 1)
+                div ! id "terminal" $ toHtml . hint $ p
 
-            section ! class_ "out" $ mempty
+            section ! class_ "out" $ renderTests $ p
 
         footer $ do
             div ! class_ "quote" $
@@ -68,3 +75,4 @@ root i = S.html . renderHtml $ do
 
         script ! src "https://cdn.jsdelivr.net/ace/1.1.8/min/ace.js" $ mempty
         script ! src "/js/root.js" $ mempty
+    where p = problems !! (i - 1)
