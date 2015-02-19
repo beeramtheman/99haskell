@@ -47,6 +47,7 @@ stripError []     = ""
 stripError e | "/mnt/" `isPrefixOf` e = stripError $ drop 5 e
              | "<interactive>:" `isPrefixOf` e = stripError $ drop 19 e
              | "<interactive>" `isPrefixOf` e = stripError $ drop 13 e
+             | "*** Exception" `isPrefixOf` e = stripError $ drop 4 e
 stripError (x:xs) = case take 13 xs == "<interactive>" of
                     True -> [x]
                     False -> x : stripError xs
