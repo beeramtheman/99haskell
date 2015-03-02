@@ -48,7 +48,9 @@ root i = S.html . renderHtml $ do
                     div ! class_ "control" $ do
                         a ! href "http://example.com" ! target "_blank" $ "Examples"
                         br
-                        a ! href "http://example.com" ! target "_blank" $ "Solutions"
+                        a ! href (toValue $
+                            "https://wiki.haskell.org/99_questions/Solutions/"
+                            ++ show i) ! target "_blank" $ "Solutions"
 
                 div ! class_ "termbar" $ do
                     div ! class_ "left" $ do
