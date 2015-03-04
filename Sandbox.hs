@@ -84,4 +84,4 @@ runTest c t = do
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do
     allTests <- mapConcurrently (runTest c) (tests $ problems !! (i - 1))
-    return . toJSON $ Mark (elem True [testSucc x | x <- allTests]) allTests
+    return . toJSON $ Mark (all (==True) [testSucc x | x <- allTests]) allTests
