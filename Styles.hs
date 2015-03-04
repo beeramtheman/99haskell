@@ -31,7 +31,7 @@ palette c = case Map.lookup c colors of
                                 , ("dull bg #2", "#ededed")
                                 , ("test wrong", "#e86868")
                                 , ("test right", "#6be868")
-                                , ("big action", "#ededed")]
+                                , ("big action", "#e08e79")]
 
 root :: Text
 root = render $ do
