@@ -31,6 +31,9 @@ fromJson = ffi "JSON.parse(%1)"
 setHtml :: Html -> Element -> Fay ()
 setHtml = ffi "%2['innerHTML'] = %1"
 
+showBlock :: Element -> Fay ()
+showBlock = ffi "%1['style']['display'] = 'block'"
+
 lookup :: String -> a -> Fay b
 lookup = ffi "%2[%1]"
 
@@ -116,7 +119,6 @@ addCommand = ffi "%1.commands.addCommand({ \
     \ exec: %4 \
 \ })"
 
-
 -- Config
 
 setupTerm :: Fay ()
@@ -154,20 +156,21 @@ runCode e = do
     ajax "post"
          ("http://localhost:3000/sandbox/" ++ num)
          [("code", aceVal)]
-         showMark
+         evaluateMark
 
 fullscreenEditor :: Event -> Fay ()
 fullscreenEditor e = fullscreen =<< query "#terminal"
 
 -- Ajax Callbacks
 
-showMark :: AjaxRes -> Fay ()
-showMark m = do
+evaluateMark :: AjaxRes -> Fay ()
+evaluateMark m = do
     out <- query "section.out"
-    tests <- lookup "tests" =<< (fromJson m)
-    markHtml <- makeMarkHtml tests
+    res <- fromJson m
+    markHtml <- makeMarkHtml =<< lookup "tests" res
     setHtml markHtml out
-    print m
+    success <- lookup "success" res
+    case success of True -> showBlock =<< query "nav"
 
 -- HTML
 

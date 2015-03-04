@@ -19,7 +19,9 @@ palette c = case Map.lookup c colors of
     Nothing -> transparent
     Just x -> x
     where colors = Map.fromList [ ("near black", "#212121")
-                                , ("near white", "#dedede")
+                                , ("near white", "#f2f2f2")
+                                , ("light gray", "#dedede")
+                                , ("plain gray", "#808080")
                                 , ("decorative", "#c5e0dc")
                                 , ("background", "#fbf9f5")
                                 , ("bg borders", "#ece5ce")
@@ -40,6 +42,9 @@ root = render $ do
         fontFamily ["Open Sans"] [serif]
         fontSize (px 16)
         color $ palette "near black"
+
+    "a" ? do
+        textDecoration none
 
     ".topbar" ? do
         height (px 6)
@@ -118,12 +123,45 @@ root = render $ do
             textAlign (alignSide sideCenter)
             backgroundColor $ palette "boldest bg"
 
+    "nav" ? do
+        display none
+        position relative
+        height (px 60)
+        margin (px 20) (px 0) (px 0) (px 0)
+        textAlign (alignSide sideCenter)
+        overflow hidden
+
+        "a" ? do
+            position absolute
+            display block
+            height (pct 100)
+
+            ".all" & do
+                width (px 60)
+                fontSize (px 40)
+                color $ palette "plain gray"
+                boxSizing borderBox
+                border solid (px 1) $ palette "dull walls"
+                borderRadius (px 4) (px 0) (px 0) (px 4)
+                borderRightWidth (px 0)
+
+                "span" ? lineHeight (px 60)
+
+            ".next" & do
+                right (px 0)
+                width (other "calc(100% - 60px)")
+                lineHeight (px 60)
+                borderRadius (px 0) (px 4) (px 4) (px 0)
+                backgroundColor $ palette "big action"
+                color $ palette "near white"
+                fontWeight bold
+
     ".termbar" ? do
         height (px 30)
         padding (px 0) (px 10) (px 0) (px 10)
         borderRadius (px 5) (px 5) (px 0) (px 0)
         fontSize (px 20)
-        color $ palette "near white"
+        color $ palette "light gray"
         backgroundColor $ palette "darkest bg"
 
         ".left" ? do

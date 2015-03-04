@@ -64,6 +64,12 @@ root i = S.html . renderHtml $ do
 
                 div ! id "terminal" $ toHtml . hint $ p
 
+            nav $ do
+                a ! class_ "all" ! href "/problems" ! target "_blank" $ do
+                    H.span ! class_ "fa fa-th-list" $ mempty
+                a ! class_ "next" ! href (toValue $ "/" ++ show (i + 1)) $
+                    toHtml $ "Nice! Head over to problem #" ++ show (i + 1)
+
             section ! class_ "out" $ renderTests $ p
 
         footer $ do
