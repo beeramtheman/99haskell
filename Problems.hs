@@ -31,7 +31,7 @@ problems = [ Problem
            , Problem
                  "Make a functtion named 'myLength' that finds the number of elements in a list."
                  "myLength :: [a] -> Int"
-                 [ ("myLength [123, 456, 789]", "2")
+                 [ ("myLength [123, 456, 789]", "3")
                  , ("myLength \"Hello, World!\"", "13") ]
 
            , Problem
