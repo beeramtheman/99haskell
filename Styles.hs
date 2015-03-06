@@ -103,27 +103,23 @@ root = render $ do
                 padding (px 10) (px 10) (px 10) (px 20)
 
     ".dashboard" ? do
-        position relative
+        display flex
         marginBottom (px sep)
 
         ".problem" ? do
-            width (other "calc(80% - 10px)")
+            width (pct 80)
             boxSizing borderBox
             padding (px 10) (px 10) (px 10) (px 10)
             border solid (px 1) $ palette "bg borders"
             backgroundColor $ palette "background"
 
         ".control" ? do
-            position absolute
-            top (px 0)
-            right (px 0)
-            width (other "calc(20% - 10px)")
-            height (pct 100)
-            boxSizing borderBox
-            paddingTop (px 9)
+            "flex" -: "1"
+            marginLeft (px 20)
+            padding (px 10) (px 10) (px 10) (px 10)
             border solid (px 1) $ palette "bold walls"
-            textAlign (alignSide sideCenter)
             backgroundColor $ palette "boldest bg"
+            textAlign (alignSide sideCenter)
 
     "nav" ? do
         display none
