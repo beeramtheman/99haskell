@@ -33,7 +33,8 @@ palette c = case Map.lookup c colors of
                                 , ("dull bg #2", "#ededed")
                                 , ("test wrong", "#e86868")
                                 , ("test right", "#6be868")
-                                , ("big action", "#e08e79")]
+                                , ("big action", "#e08e79")
+                                , ("linky blue", "#1482C7")]
 
 root :: Text
 root = render $ do
@@ -45,6 +46,7 @@ root = render $ do
 
     "a" ? do
         textDecoration none
+        color $ palette "linky blue"
 
     ".topbar" ? do
         height (px 6)
@@ -203,6 +205,7 @@ general = render $ do
 
     "a" ? do
         textDecoration none
+        color $ palette "linky blue"
 
     ".topbar" ? do
         height (px 6)
