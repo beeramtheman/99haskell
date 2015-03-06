@@ -46,6 +46,12 @@ reqs = do
             try <- liftIO $ tryProblem num code
             json try
 
+    get "/problems" Views.list
+
+    get "/css/general.css" $ do
+        setHeader "Content-Type" "text/css; charset=utf-8"
+        text Styles.general
+
 main :: IO ()
 main = do
     scotty 3000 $ do

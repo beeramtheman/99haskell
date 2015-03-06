@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Styles (Styles.root) where
+module Styles (Styles.root, general) where
 
 import Clay
 import qualified Clay.Media as M
@@ -192,3 +192,29 @@ root = render $ do
         textAlign (alignSide sideCenter)
 
         ".quote" ? fontStyle italic
+
+general :: Text
+general = render $ do
+    body ? do
+        margin (px 0) (px 0) (px 0) (px 0)
+        fontFamily ["Open Sans"] [serif]
+        fontSize (px 16)
+        color $ palette "near black"
+
+    "a" ? do
+        textDecoration none
+
+    ".topbar" ? do
+        height (px 6)
+        backgroundColor $ palette "decorative"
+
+    header ? do
+        height (px 100)
+        lineHeight (px 100)
+        fontSize (px 20)
+        textAlign (alignSide sideCenter)
+
+    ".wrap" ? do
+        position relative
+        margin (px 0) auto (px 0) auto
+        width (px editWidth)

@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Views (root) where
+module Views (root, Views.list) where
 
 import Problems (Problem(..), problems)
 import Data.Monoid (mempty)
@@ -11,6 +11,14 @@ import Text.Blaze.Html5 as H
 import Text.Blaze.Html5.Attributes as A
 import Text.Blaze.Html.Renderer.Text
 import Prelude hiding (head, div, id)
+
+renderProblems :: Html
+renderProblems = mapM_
+    (\(n,d) -> div $ do
+        H.span $ toHtml $ show n ++ ". "
+        a ! href (toValue $ "/" ++ show n) $ toHtml d
+        br)
+    $ zip [1..] $ Prelude.map description problems
 
 renderTests :: Problem -> Html
 renderTests p = mapM_
@@ -65,7 +73,7 @@ root i = S.html . renderHtml $ do
                 div ! id "terminal" $ toHtml . hint $ p
 
             nav $ do
-                a ! class_ "all" ! href "/problems" ! target "_blank" $ do
+                a ! class_ "all" ! href "/problems" $ do
                     H.span ! class_ "fa fa-th-list" $ mempty
                 a ! class_ "next" ! href (toValue $ "/" ++ show (i + 1)) $
                     toHtml $ "Nice! Head over to problem #" ++ show (i + 1)
@@ -84,3 +92,16 @@ root i = S.html . renderHtml $ do
         script ! src "https://cdn.jsdelivr.net/ace/1.1.8/min/ace.js" $ mempty
         script ! src "/js/root.js" $ mempty
     where p = problems !! (i - 1)
+
+list :: S.ActionM ()
+list = S.html . renderHtml $ do
+    head $ do
+        H.title "Problems | 99 Haskell"
+        link ! rel "stylesheet" ! href
+            "https://fonts.googleapis.com/css?family=Open+Sans:400,400italic"
+        link ! rel "stylesheet" ! href "/css/general.css"
+
+    body $ do
+        div ! class_ "topbar" $ mempty
+        header "99 Haskell"
+        div ! class_ "wrap" $ renderProblems
