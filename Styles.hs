@@ -218,3 +218,5 @@ general = render $ do
         position relative
         margin (px 0) auto (px 0) auto
         width (px editWidth)
+
+    ".num" ? fontWeight bold

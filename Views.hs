@@ -15,8 +15,9 @@ import Prelude hiding (head, div, id)
 renderProblems :: Html
 renderProblems = mapM_
     (\(n,d) -> div $ do
-        H.span $ toHtml $ show n ++ ". "
+        H.span ! class_ "num" $ toHtml $ show n ++ ". "
         a ! href (toValue $ "/" ++ show n) $ toHtml d
+        br
         br)
     $ zip [1..] $ Prelude.map description problems
 
@@ -54,7 +55,7 @@ root i = S.html . renderHtml $ do
                         toHtml . description $ p
 
                     div ! class_ "control" $ do
-                        a ! href "http://example.com" ! target "_blank" $ "Examples"
+                        a ! href "/problems" ! target "_blank" $ "Problems"
                         br
                         a ! href (toValue $
                             "https://wiki.haskell.org/99_questions/Solutions/"
