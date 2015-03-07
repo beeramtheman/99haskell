@@ -87,14 +87,14 @@ ajax m u p cb
         param <- makeParam p
         url <- makeUrl u param
         ajaxCallback a cb
-        ajaxOpen a m url False
+        ajaxOpen a m url True
         ajaxSend a =<< makeParam []
     | m == "post" = do
         a <- newAjax
         url <- makeUrl u =<< makeParam []
         param <- makeParam p
         ajaxCallback a cb
-        ajaxOpen a m url False
+        ajaxOpen a m url True
         ajaxHeader a "Content-type" "application/x-www-form-urlencoded"
         ajaxSend a param
 
