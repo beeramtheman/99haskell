@@ -170,7 +170,7 @@ evaluateMark m = do
     markHtml <- makeMarkHtml =<< lookup "tests" res
     setHtml markHtml out
     success <- lookup "success" res
-    case success of True -> showBlock =<< query "nav"
+    if success then showBlock =<< query "nav" else return ()
 
 -- HTML
 
