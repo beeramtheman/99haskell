@@ -2,6 +2,7 @@ module Sandbox (tryProblem) where
 
 import Problems (problems, Problem(..), Test)
 import System.Process
+import System.Timeout
 import System.IO
 import Control.Concurrent.Async
 import Data.Unique
@@ -56,32 +57,48 @@ makeTestRes :: Test -> Bool -> String -> String -> TestRes
 makeTestRes t s r e | length e > 0 = TestRes t s $ stripError e
                     | otherwise    = TestRes t s r
 
-runTest :: String -> Test -> IO TestRes
-runTest c t = do
+runTest :: Int -> String -> Test -> IO TestRes
+runTest to c t = do
     unique <- newUnique
-    let dir = "/tmp/99haskell/" ++ (show $ hashUnique unique)
+    let code = 'a':(show $ hashUnique unique) -- docker requires letter initial
+    let dir = "/tmp/99haskell/" ++ code
     createDirectoryIfMissing True dir
     writeFile (dir ++ "/Main.hs") c
 
     (Just hin, Just hout, Just herr, _) <-
         createProcess
-            (proc "docker" ["run","-iv",dir ++ ":/mnt","haskell","/bin/bash"])
+            (proc "docker" [ "run"
+                           , "--name=" ++ code
+                           , "--interactive=true"
+                           , "--volume=" ++ dir ++ ":/mnt"
+                           , "haskell"
+                           , "/bin/bash" ])
             { std_in = CreatePipe, std_out = CreatePipe, std_err = CreatePipe }
 
     hPutStrLn hin "ghci -v0 /mnt/Main.hs"
     hPutStrLn hin $ fst t
     hClose hin
 
-    output <- hGetContentsEager hout
-    hClose hout
+    maybeOutput <- timeout (to * 1000000) (return =<< (hGetContentsEager hout))
 
-    error <- hGetContentsEager herr
+    let output = case maybeOutput of Nothing -> ""
+                                     Just a -> a
+
+    error <- case maybeOutput of Nothing -> return $ "99Haskell: Timeout Error\
+                                                \. Program did not exit after "
+                                                ++ show to ++ " seconds."
+                                 Just _  -> hGetContentsEager herr
+
+    hClose hout
     hClose herr
 
-    removeDirectoryRecursive dir
+    async $ do
+        readProcess "docker" ["rm", "-f", code] ""
+        removeDirectoryRecursive dir
+
     return $ makeTestRes t (output == snd t) output error
 
 tryProblem :: Int -> String -> IO Value
 tryProblem i c = do
-    allTests <- mapConcurrently (runTest c) (tests $ problems !! (i - 1))
+    allTests <- mapConcurrently (runTest 5 c) (tests $ problems !! (i - 1))
     return . toJSON $ Mark (all (==True) [testSucc x | x <- allTests]) allTests
