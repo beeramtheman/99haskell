@@ -154,7 +154,7 @@ runCode e = do
     num <- getData "num" datax
     aceVal <- aceValue term
     ajax "post"
-         ("http://localhost:3000/sandbox/" ++ num)
+         ("/sandbox/" ++ num)
          [("code", aceVal)]
          evaluateMark
 
