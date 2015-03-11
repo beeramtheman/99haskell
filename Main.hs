@@ -39,7 +39,10 @@ reqs = do
         num <- param "1"
         code <- param "code"
 
-        if not (validProblem num) then
+        if length code > 1500 then
+            text "Why is your code so long smh"
+
+        else if not (validProblem num) then
             text "Out of range!"
 
         else do

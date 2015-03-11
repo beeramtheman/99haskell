@@ -69,9 +69,11 @@ root i = S.html . renderHtml $ do
 
                     div ! class_ "right" $ do
                         H.span ! class_ "run fa fa-play"
-                               ! A.title "Run code (Ctrl-Enter)" $ mempty
+                               ! A.title "Run code (Ctrl-Enter)"
+                               ! dataAttribute "disabled" "false" $ mempty
 
                 div ! id "terminal" $ toHtml . hint $ p
+                div ! class_ "warning" $ mempty
 
             nav $ do
                 a ! class_ "all" ! href "/problems" $ do

@@ -22,6 +22,9 @@ addEvent = ffi "%3.addEventListener(%1, %2)"
 fullscreen :: Element -> Fay ()
 fullscreen = ffi "%1.mozRequestFullScreen()"
 
+setData :: String -> String -> Element -> Fay ()
+setData = ffi "%3['dataset'][%1] = %2"
+
 getData :: String -> Element -> Fay String
 getData = ffi "%2['dataset'][%1]"
 
@@ -33,6 +36,9 @@ setHtml = ffi "%2['innerHTML'] = %1"
 
 showBlock :: Element -> Fay ()
 showBlock = ffi "%1['style']['display'] = 'block'"
+
+hideBlock :: Element -> Fay ()
+hideBlock = ffi "%1['style']['display'] = 'none'"
 
 lookup :: String -> a -> Fay b
 lookup = ffi "%2[%1]"
@@ -112,6 +118,9 @@ aceSetBool = ffi "%1.setOption(%2, %3)"
 aceValue :: Ace -> Fay String
 aceValue = ffi "%1.getSession().getValue()"
 
+aceOn :: Ace -> String -> (Object -> Fay ()) -> Fay ()
+aceOn = ffi "%1.getSession().on(%2, %3)"
+
 addCommand :: Ace -> String -> Object -> (Event -> Fay ()) -> Fay ()
 addCommand = ffi "%1.commands.addCommand({ \
     \ name: %2, \
@@ -128,6 +137,7 @@ setupTerm = do
     aceSet term "theme" "ace/theme/tomorrow"
     aceSetBool term "wrap" True
     aceSetBool term "showGutter" False
+    aceOn term "change" checkLength
 
     keys <- objAddStr "win" "Ctrl-Enter"
             =<< objAddStr "mac" "Command-Enter"
@@ -145,23 +155,26 @@ setupFunctions = do
     ffi "window.escape = function(h) { return h.replace(/&/g, '&amp;').replace \
         \ (/</g, '&lt;').replace(/\\n/g, '<br>').replace(/ /g, '&nbsp;') }"
 
--- Events
+-- Events / Callbacks
 
 runCode :: Event -> Fay ()
 runCode e = do
-    term <- ace "terminal"
-    datax <- query ".datax"
-    num <- getData "num" datax
-    aceVal <- aceValue term
-    ajax "post"
-         ("/sandbox/" ++ num)
-         [("code", aceVal)]
-         evaluateMark
+    disabled <- query ".termbar .run" >>= getData "disabled"
+
+    if disabled == "false" then do
+        term <- ace "terminal"
+        datax <- query ".datax"
+        num <- getData "num" datax
+        aceVal <- aceValue term
+        ajax "post"
+             ("/sandbox/" ++ num)
+             [("code", aceVal)]
+             evaluateMark
+    else
+        return ()
 
 fullscreenEditor :: Event -> Fay ()
 fullscreenEditor e = fullscreen =<< query "#terminal"
-
--- Ajax Callbacks
 
 evaluateMark :: AjaxRes -> Fay ()
 evaluateMark m = do
@@ -171,6 +184,26 @@ evaluateMark m = do
     setHtml markHtml out
     success <- lookup "success" res
     if success then showBlock =<< query "nav" else return ()
+
+checkLength :: Object -> Fay ()
+checkLength o = do
+    term <- ace "terminal"
+    aceVal <- aceValue term
+    let len = length aceVal
+    html <- makeLengthHtml len
+    warning <- query ".warning"
+
+    if len < 1000 then
+        hideBlock warning
+    else do
+        setHtml html warning
+        showBlock warning
+
+    if len > 1500 then
+        query ".termbar .run" >>= setData "disabled" "true"
+    else
+        query ".termbar .run" >>= setData "disabled" "false"
+
 
 -- HTML
 
@@ -189,6 +222,9 @@ makeMarkHtml = ffi "(function() { \
     \ }); \
     \ return html; \
 \ })()"
+
+makeLengthHtml :: Int -> Fay Html
+makeLengthHtml = ffi "(function() { return %1 + '/1500 characters used!' })()"
 
 -- Main
 

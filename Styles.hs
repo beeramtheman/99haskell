@@ -34,7 +34,8 @@ palette c = case Map.lookup c colors of
                                 , ("test wrong", "#e86868")
                                 , ("test right", "#6be868")
                                 , ("big action", "#e08e79")
-                                , ("linky blue", "#1482C7")]
+                                , ("linky blue", "#1482C7")
+                                , ("warning yo", "#e07575")]
 
 root :: Text
 root = render $ do
@@ -176,6 +177,9 @@ root = render $ do
             lineHeight (px 30)
             cursor pointer
 
+            "data-disabled=\"true\"" & do
+                opacity 0.4
+
     "#terminal" ? do
         height (px 300)
         fontFamily ["Source Code Pro"] [monospace]
@@ -184,6 +188,16 @@ root = render $ do
         transition "box-shadow" 0.3 ease 0
 
     "#terminal.ace_focus" ? boxShadow (px 0) (px 3) (px 6) (rgba 0 0 0 102)
+
+    ".warning" ? do
+        display none
+        height (px 30)
+        lineHeight (px 30)
+        textAlign (alignSide sideCenter)
+        borderRadius (px 0) (px 0) (px 3) (px 3)
+        color $ palette "near white"
+        boxShadow (px 0) (px 3) (px 6) (rgba 0 0 0 51)
+        backgroundColor $ palette "warning yo"
 
     footer ? do
         margin (px 50) (px 0) (px 8) (px 0)
