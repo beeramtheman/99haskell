@@ -90,7 +90,9 @@ root i = S.html . renderHtml $ do
             "A service made by "
             a ! href "http://bram.gg" $ "Bram Hoskin"
             " - "
-            a ! href "/about" $ "About"
+            a ! href
+                "https://github.com/bramgg/99haskell/blob/master/README.md" $
+                "About"
 
         script ! src "https://cdn.jsdelivr.net/ace/1.1.8/min/ace.js" $ mempty
         script ! src "/js/root.js" $ mempty
