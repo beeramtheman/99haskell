@@ -47,7 +47,7 @@ problems = [ Problem
            , Problem
                 "Make a function named 'isPalindrome' that finds whether a list is a palindrome (is the same read forward and backward)."
                 "isPalindrome :: (Eq a) => [a] -> Bool"
-                [ ("isPalindrome [1,2,3]", "False")
+                [ ("isPalindrome [1,2,3,1]", "False")
                 , ("isPalindrome \"madamimadam\"", "True")
                 , ("isPalindrome [1,2,4,8,16,8,4,2,1]", "True") ]
 
