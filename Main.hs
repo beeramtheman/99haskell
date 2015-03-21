@@ -12,14 +12,21 @@ import System.IO
 import System.Exit
 import Control.Applicative
 import Network.CGI hiding (setHeader)
-import Data.Text.Lazy hiding (length)
+import Data.Text.Lazy hiding (length, isInfixOf)
+import Data.List (isInfixOf)
 
 validProblem :: Int -> Bool
 validProblem p = p > 0 && p <= (length problems)
 
 sendProblem :: Int -> ActionM ()
 sendProblem p | validProblem p = Views.root p
-              | otherwise = text "Out of range!"
+              | otherwise = text "All done! :D Add more problems: git.io/p668"
+
+sandboxFilter :: Int -> String -> ActionM ()
+sandboxFilter n c | length c > 1500         = text "Over 1500 characters."
+                  | not $ validProblem n    = text "Out of range!"
+                  | "import " `isInfixOf` c = text "Can not contain imports"
+                  | otherwise               = json =<< liftIO (tryProblem n c)
 
 reqs :: ScottyM ()
 reqs = do
@@ -38,16 +45,7 @@ reqs = do
     post (regex "^/sandbox/([0-9]+)$") $ do
         num <- param "1"
         code <- param "code"
-
-        if length code > 1500 then
-            text "Why is your code so long smh"
-
-        else if not (validProblem num) then
-            text "Out of range!"
-
-        else do
-            try <- liftIO $ tryProblem num code
-            json try
+        sandboxFilter num code
 
     get "/problems" Views.list
 

@@ -13,6 +13,9 @@ data Object
 
 -- General
 
+contains :: String -> String -> Fay Bool
+contains = ffi "%1.indexOf(%2) > -1"
+
 query :: String -> Fay Element
 query = ffi "document.querySelector(%1)"
 
@@ -138,6 +141,7 @@ setupTerm = do
     aceSetBool term "wrap" True
     aceSetBool term "showGutter" False
     aceOn term "change" checkLength
+    aceOn term "change" ensureSafe
 
     keys <- objAddStr "win" "Ctrl-Enter"
             =<< objAddStr "mac" "Command-Enter"
@@ -190,12 +194,12 @@ checkLength o = do
     term <- ace "terminal"
     aceVal <- aceValue term
     let len = length aceVal
-    html <- makeLengthHtml len
     warning <- query ".warning"
 
     if len < 1000 then
         hideBlock warning
     else do
+        html <- makeLengthHtml len
         setHtml html warning
         showBlock warning
 
@@ -204,8 +208,26 @@ checkLength o = do
     else
         query ".termbar .run" >>= setData "disabled" "false"
 
+ensureSafe :: Object -> Fay ()
+ensureSafe o = do
+    term <- ace "terminal"
+    aceVal <- aceValue term
+    hasImport <- aceVal `contains` "import "
+    warning <- query ".warning"
+
+    if hasImport then do
+        html <- toHtml "Code can not contain imports."
+        setHtml html warning
+        showBlock warning
+        query ".termbar .run" >>= setData "disabled" "true"
+    else do
+        hideBlock warning
+        query ".termbar .run" >>= setData "disabled" "false"
 
 -- HTML
+
+toHtml :: String -> Fay Html
+toHtml = ffi "(function() { return %1 })()"
 
 makeMarkHtml :: a -> Fay Html
 makeMarkHtml = ffi "(function() { \
