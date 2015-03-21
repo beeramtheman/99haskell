@@ -15,8 +15,11 @@ returned value matches the expected value.
 
 ## Development
 
-Compile [Script.hs][script] into *Script.js* with [Fay][fay] (`fay Script.hs`).
-Then `cabal run` will build and run the 99 Haskell executable on port 3000.
+Compile [Script.hs][script]* into *Script.js* with [Fay][fay] (`fay
+Script.hs`).  Then `cabal run` will build and run the 99 Haskell executable on
+port 3000.
+
+\* *Probably the worst written part of the program. JS in Haskell is weird.*
 
 Creating/modifying problems is easy, simply edit [Problems.hs][problems]. Note
 you will have to restart 99 Haskell for problem changes to take effect
