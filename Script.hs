@@ -212,7 +212,7 @@ ensureSafe :: Object -> Fay ()
 ensureSafe o = do
     term <- ace "terminal"
     aceVal <- aceValue term
-    hasImport <- aceVal `contains` "import "
+    hasImport <- aceVal `contains` "import"
     warning <- query ".warning"
 
     if hasImport then do

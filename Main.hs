@@ -23,10 +23,10 @@ sendProblem p | validProblem p = Views.root p
               | otherwise = text "All done! :D Add more problems: git.io/p668"
 
 sandboxFilter :: Int -> String -> ActionM ()
-sandboxFilter n c | length c > 1500         = text "Over 1500 characters."
-                  | not $ validProblem n    = text "Out of range!"
-                  | "import " `isInfixOf` c = text "Can not contain imports"
-                  | otherwise               = json =<< liftIO (tryProblem n c)
+sandboxFilter n c | length c > 1500        = text "Over 1500 characters."
+                  | not $ validProblem n   = text "Out of range!"
+                  | "import" `isInfixOf` c = text "Can not contain imports"
+                  | otherwise              = json =<< liftIO (tryProblem n c)
 
 reqs :: ScottyM ()
 reqs = do
