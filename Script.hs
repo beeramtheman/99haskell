@@ -162,6 +162,7 @@ runCode e = do
     disabled <- query ".termbar .run" >>= getData "disabled"
 
     if disabled == "false" then do
+        query ".termbar .run" >>= setData "disabled" "true"
         term <- ace "terminal"
         datax <- query ".datax"
         num <- getData "num" datax
@@ -175,6 +176,7 @@ runCode e = do
 
 evaluateMark :: AjaxRes -> Fay ()
 evaluateMark m = do
+    query ".termbar .run" >>= setData "disabled" "false"
     out <- query "section.out"
     res <- fromJson m
     markHtml <- makeMarkHtml =<< lookup "tests" res
