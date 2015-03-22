@@ -168,7 +168,6 @@ root = render $ do
 
             ".filename" ? do
                 position absolute
-                margin (px 0) (px 0) (px 0) (px 10)
                 fontSize (px 14)
 
         ".right" ? float floatRight

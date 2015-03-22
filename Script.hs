@@ -22,15 +22,6 @@ query = ffi "document.querySelector(%1)"
 addEvent :: String -> (Event -> Fay ()) -> Element -> Fay ()
 addEvent = ffi "%3.addEventListener(%1, %2)"
 
-fullscreen :: Element -> Fay ()
-fullscreen = ffi "(function() { \
-    \ %1.requestFullscreen =    %1.requestFullscreen \
-    \                        || %1.mozRequestFullScreen \
-    \                        || %1.webkitRequestFullscreen \
-    \                        || %1.msRequestFullscreen; \
-    \ %1.requestFullscreen(); \
-\ })()"
-
 setData :: String -> String -> Element -> Fay ()
 setData = ffi "%3['dataset'][%1] = %2"
 
@@ -158,7 +149,6 @@ setupTerm = do
 setupEvents :: Fay ()
 setupEvents = do
     query ".termbar .run" >>= addEvent "click" runCode
-    query ".termbar .fullscreen" >>= addEvent "click" fullscreenEditor
 
 setupFunctions :: Fay ()
 setupFunctions = do
@@ -182,9 +172,6 @@ runCode e = do
              evaluateMark
     else
         return ()
-
-fullscreenEditor :: Event -> Fay ()
-fullscreenEditor e = fullscreen =<< query "#terminal"
 
 evaluateMark :: AjaxRes -> Fay ()
 evaluateMark m = do
