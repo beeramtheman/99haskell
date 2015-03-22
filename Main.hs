@@ -56,5 +56,5 @@ reqs = do
 main :: IO ()
 main = do
     scotty 3000 $ do
-        middleware logStdoutDev
+        middleware logStdoutDev -- REMOVE IN PRODUCTION
         reqs

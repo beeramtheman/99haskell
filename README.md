@@ -15,6 +15,8 @@ returned value matches the expected value.
 
 ## Development
 
+99 Haskell requires Docker and uses the [haskell:7.8 Docker image][image].
+
 Compile [Script.hs][script]* into *Script.js* with [Fay][fay] (`fay
 Script.hs`).  Then `cabal run` will build and run the 99 Haskell executable on
 port 3000.
@@ -39,11 +41,18 @@ Haskell language. Any contributions for the sake of cleaning up bad code is
 welcome, and would benefit me and possibly others who may look through the
 source.
 
+## Production
+
+In production you should remove `middleware logStdoutDev` from the bottom of
+[Main.hs][main].
+
 [99haskell]: https://www.99haskell.org
 [preview]: preview.gif
 [h99]: https://wiki.haskell.org/H-99:_Ninety-Nine_Haskell_Problems
+[image]: https://registry.hub.docker.com/_/haskell/
 [script]: Script.hs
 [problems]: Problems.hs
 [fay]: https://github.com/faylang/fay/wiki
 [h99 s]: https://wiki.haskell.org/99_questions/Solutions
 [xkcd]: https://xkcd.com/932/
+[main]: Main.hs
