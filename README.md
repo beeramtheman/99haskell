@@ -1,4 +1,4 @@
-# 99 Haskell ([99haskell.org][99haskell]) * coming soon *
+# 99 Haskell ([99haskell.org][99haskell])
 
 ![preview][preview]
 
