@@ -23,7 +23,13 @@ addEvent :: String -> (Event -> Fay ()) -> Element -> Fay ()
 addEvent = ffi "%3.addEventListener(%1, %2)"
 
 fullscreen :: Element -> Fay ()
-fullscreen = ffi "%1.mozRequestFullScreen()"
+fullscreen = ffi "(function() { \
+    \ %1.requestFullscreen =    %1.requestFullscreen \
+    \                        || %1.mozRequestFullScreen \
+    \                        || %1.webkitRequestFullscreen \
+    \                        || %1.msRequestFullscreen; \
+    \ %1.requestFullscreen(); \
+\ })()"
 
 setData :: String -> String -> Element -> Fay ()
 setData = ffi "%3['dataset'][%1] = %2"
