@@ -33,7 +33,7 @@ palette c = case Map.lookup c colors of
                                 , ("dull bg #2", "#ededed")
                                 , ("test wrong", "#e86868")
                                 , ("test right", "#6be868")
-                                , ("big action", "#e08e79")
+                                , ("big action", "#78a9a8")
                                 , ("linky blue", "#1482C7")
                                 , ("warning yo", "#e07575")]
 
