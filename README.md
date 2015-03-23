@@ -46,7 +46,7 @@ source.
 In production you should remove `middleware logStdoutDev` from the bottom of
 [Main.hs][main].
 
-[99haskell]: https://www.99haskell.org
+[99haskell]: http://www.99haskell.org
 [preview]: preview.gif
 [h99]: https://wiki.haskell.org/H-99:_Ninety-Nine_Haskell_Problems
 [image]: https://registry.hub.docker.com/_/haskell/
