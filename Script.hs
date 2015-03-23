@@ -152,7 +152,7 @@ setupEvents = do
 
 setupFunctions :: Fay ()
 setupFunctions = do
-    ffi "window.escape = function(h) { return h.replace(/&/g, '&amp;').replace \
+    ffi "window.toCode = function(h) { return h.replace(/&/g, '&amp;').replace\
         \ (/</g, '&lt;').replace(/\\n/g, '<br>').replace(/ /g, '&nbsp;') }"
 
 -- Events / Callbacks
@@ -230,10 +230,10 @@ makeMarkHtml = ffi "(function() { \
     \ %1.forEach(function(t, i) { \
     \     html += '<div class=\"test\">\\\
     \                 <div class=\"success ' + t.success + '\"></div>\\\
-    \                 <div class=\"overview\">' + escape(t.test[0]) + '\\\
-    \                 -> ' + escape(t.test[1]); \
+    \                 <div class=\"overview\">' + toCode(t.test[0]) + '\\\
+    \                 -> ' + toCode(t.test[1]); \
     \     if(!t.success) { \
-    \         html += '<br>' + escape(t.output); \
+    \         html += '<br>' + toCode(t.output); \
     \     } \
     \     html += '</div></div>'; \
     \ }); \
