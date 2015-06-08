@@ -81,34 +81,34 @@ problems = [ Problem -- 1
                 "data ListItem a = Single a | Multiple Int a\n\
                 \  deriving Show\n\
                 \encodeModified :: Eq a => [a] -> [ListItem a]"
-                [ ("encodeModified \"aaaabccaadeeee\"", "[Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']") ]
+                [ ("encodeModified \"aaaabccaadeeee\"", "[Multiple 4 'a',Single 'b',Multiple 2 'c',Multiple 2 'a',Single 'd',Multiple 4 'e']") ]
             , Problem -- 12
                 "Make a function named 'decodeModified' that decodes a modified run-length encoding, implemented in Problem 11."
                 "data ListItem a = Single a | Multiple Int a\n\
                 \  deriving Show\n\
                 \decodeModified :: [ListItem a] -> [a]"
-                [ ("decodeModified \"[Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']\"", "aaaabccaadeeee") ]
+                [ ("decodeModified \"[Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']\"", "\"aaaabccaadeeee\"") ]
             , Problem -- 13
                 "Make a function named 'encodeDirect' that implements the run-length encoding directly. That is, without first generating sub-lists."
                 "data ListItem a = Single a | Multiple Int a\n\
                 \  deriving Show\n\
                 \encodeDirect :: Eq a => [a] -> [ListItem a]"
-                [ ("encodeDirect \"aaaabccaadeeee\"", "[Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']") ]
+                [ ("encodeDirect \"aaaabccaadeeee\"", "[Multiple 4 'a',Single 'b',Multiple 2 'c',Multiple 2 'a',Single 'd',Multiple 4 'e']") ]
             , Problem -- 14
                 "Make a function named 'dupli' that duplicates the elements of a list."
                 "dupli :: [a] -> [a]"
-                [ ("dupli \"abccd\"", "aabbccccdd" ) ]
+                [ ("dupli \"abccd\"", "\"aabbccccdd\"" ) ]
             , Problem -- 15
                 "Make a function named 'repli' that replicates the elements of a list a given numer of times."
                 "repli :: [a] -> Int -> [a]"
-                [ ("repli \"abc\" 3", "aaabbbccc" ) ]
+                [ ("repli \"abc\" 3", "\"aaabbbccc\"" ) ]
             , Problem -- 16
                 "Make a function named 'dropEvery' that drops every nth element of a list"
                 "dropEvery :: [a] -> Int -> [a]"
-                [ ("dropEvery \"abcdefghijk\" 3", "abdeghjk" ) ]
+                [ ("dropEvery \"abcdefghijk\" 3", "\"abdeghjk\"" ) ]
             , Problem -- 17
                 "Make a function named 'split' which splits a list in two parts, where the index of the split is given."
                 "split :: [a] -> Int -> ([a], [a])"
-                [ ("split \"abcdefghijk\" 3", "(\"abc\", \"defghijk\")") ]
+                [ ("split \"abcdefghijk\" 3", "(\"abc\",\"defghijk\")") ]
             ]
 
