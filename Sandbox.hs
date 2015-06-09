@@ -4,6 +4,7 @@ import Problems (problems, Problem(..), Test)
 import System.Process
 import System.Timeout
 import System.IO
+import Control.Monad (void)
 import Control.Concurrent.Async
 import Data.Unique
 import System.Directory
@@ -65,7 +66,7 @@ runTest to c t = do
     createDirectoryIfMissing True dir
     writeFile (dir ++ "/Main.hs") c
 
-    (Just hin, Just hout, Just herr, _) <-
+    (Just hin, Just hout, Just herr, hproc) <-
         createProcess
             (proc "docker" [ "run"
                            , "--name=" ++ code
@@ -91,6 +92,7 @@ runTest to c t = do
 
     hClose hout
     hClose herr
+    void $ waitForProcess hproc
 
     async $ do
         readProcess "docker" ["rm", "-f", code] ""
