@@ -87,7 +87,7 @@ problems = [ Problem -- 1
                 "data ListItem a = Single a | Multiple Int a\n\
                 \  deriving Show\n\
                 \decodeModified :: [ListItem a] -> [a]"
-                [ ("decodeModified \"[Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']\"", "\"aaaabccaadeeee\"") ]
+                [ ("decodeModified [Multiple 4 'a', Single 'b', Multiple 2 'c', Multiple 2 'a', Single 'd', Multiple 4 'e']", "\"aaaabccaadeeee\"") ]
             , Problem -- 13
                 "Make a function named 'encodeDirect' that implements the run-length encoding directly. That is, without first generating sub-lists."
                 "data ListItem a = Single a | Multiple Int a\n\
