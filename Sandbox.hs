@@ -92,7 +92,6 @@ runTest to c t = do
 
     hClose hout
     hClose herr
-    void $ waitForProcess hproc
 
     async $ do
         readProcess "docker" ["rm", "-f", code] ""
